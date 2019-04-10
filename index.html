@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>魔急便车主app下载</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+
+    .div-left{float:left;width:250px;height:50px;border:1px solid #F00} 
+    button{
+        width: 90px;
+        height: 20px;
+    }
+</style>
+<script src="qrcode.js">
+</script>
+</head>
+<body>
+    <h1>魔急便车主APP下载</h1>
+
+    <h4>最新版本点击相应的按钮生成二维码扫描下载</h4>
+
+    <a id="download" style="display:none">如果想下载选择版本的apk文件到电脑就点我吧😺</a>
+    <table>
+        <tr>
+            <td>
+                <button id="debug" onclick="debugFun()">debug最新版</button><br><br><br>
+                <button id="pre" onclick="preFun()">pre最新版</button><br><br><br>
+                <button id="release" onclick="releaseFun()">release最新版</button><br><br><br>
+            </td>
+            <td>
+                    <p id="gen_qrcode"/>
+            </td>
+        </tr>
+    </table>
+
+    <h4>其他版本二维码:</h4><br>
+    格式如下<br><br>
+    想要下载测试环境的2.3版本,则输入d23 <br>
+    想要下载预发环境的2.4版本,则输入p24 <br>
+    想要下载生产环境的2.5版本,则输入r25 <br>
+    
+    再点击生成二维码既可<br>
+    <br>
+    <input type="text" id="input"/>
+    <button id="btn_code" onclick="genMyCode()">生成二维码</button>
+</body>
+
+<script>
+    var host="http://192.168.1.170:8080/"
+    var debug = host+"app-debug.apk"
+    var pre= host+"app-pre.apk"
+    var release= host+"app-release.apk"
+
+    qr_txt=document.getElementById("input").value
+
+    var qrcode = new QRCode(document.getElementById("gen_qrcode"),qr_txt)
+ 
+
+    function getVersion(version){
+        if(version.length<2)return version
+        v =version.charAt(0)
+        var version_name
+        if (v=="d") {
+            version_name="app-debug"
+        }else if(v=="p"){
+            version_name="app-pre"
+        }else if(v=="r"){
+            version_name="app-release"
+        }else{
+            alert("格式不正确")
+
+        }
+        number= version.substring(1,version.length)
+        var number_str=""
+        for(i=0;i<=number.length-1;i++){
+            if(i==number.length-1){
+                number_str+=number[i]
+            }else{
+                number_str+=number[i]+"."
+            }
+        }
+        var ttt =host+version_name+"_"+number_str+".apk"
+        return (host+version_name+"_"+number_str+".apk")
+    }
+
+    function gen(version){
+        qrcode.clear()
+        qrcode.makeCode(version)
+        //动态生成下载连接并显示
+        var download = document.getElementById("download")
+        download.style.display="inline"
+        download.setAttribute("href",version)
+    }
+
+    function debugFun(){
+        gen(debug)
+    }
+
+    function preFun(){
+        gen(pre)
+    }
+
+    function releaseFun(){
+        gen(release)
+    }
+    function genMyCode(){
+        var v = getVersion(document.getElementById("input").value)
+        gen(v)
+    }
+</script>
+</html>
